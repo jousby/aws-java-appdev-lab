@@ -49,15 +49,16 @@ public class PipelineStack extends Stack {
         // Prerequisite: You need to grab your oauth token from github, log into the AWS Console and add it
         // as a secret key in SecretsManager
         SecretString secretString = new SecretString(this, "oauth", SecretStringProps.builder()
-            .withSecretId("jousby/aws-java-appdev-lab")
+            .withSecretId("jousby/github")
             .build());
-        Secret githubToken = new Secret(secretString.getValue());
+        Secret githubToken = new Secret(secretString.jsonFieldValue("oauthToken"));
 
         GitHubSourceAction sourceAction = new GitHubSourceAction(this, "githubRepo", GitHubSourceActionProps
             .builder()
             .withOwner("jousby")
             .withRepo("aws-java-appdev-lab")
             .withOauthToken(githubToken)
+            .withBranch("lab/1-aws-basics")
             .withStage(sourceStage)
             .withOutputArtifactName("SourceArtifact")
             .build());
