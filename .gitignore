@@ -1,5 +1,5 @@
-target/*
-.settings/*
+target/
+.settings/
 .classpath
 .project
 .factorypath
@@ -14,3 +14,4 @@ target/*
 !.vscode/launch.json
 !.vscode/extensions.json
 _site/
+.cdk*/

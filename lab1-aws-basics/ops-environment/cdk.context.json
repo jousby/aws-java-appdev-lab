@@ -1,0 +1,30 @@
+{
+  "availability-zones:account=413953306596:region=ap-southeast-2": [
+    "ap-southeast-2a",
+    "ap-southeast-2b",
+    "ap-southeast-2c"
+  ],
+  "ssm:account=413953306596:parameterName=/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-gp2:region=ap-southeast-2": "ami-02fd0b06f06d93dfc",
+  "availability-zones:account=413953306596:region=us-east-1": [
+    "us-east-1a",
+    "us-east-1b",
+    "us-east-1c",
+    "us-east-1d",
+    "us-east-1e",
+    "us-east-1f"
+  ],
+  "ssm:account=413953306596:parameterName=/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-gp2:region=us-east-1": "ami-0080e4c5bc078760e",
+  "ssm:account=413953306596:parameterName=/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2:region=us-east-1": "ami-0de53d8956e8dcf80",
+  "availability-zones:account=413953306596:region=us-east-2": [
+    "us-east-2a",
+    "us-east-2b",
+    "us-east-2c"
+  ],
+  "ssm:account=413953306596:parameterName=/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2:region=us-east-2": "ami-02bcbb802e03574ba",
+  "availability-zones:account=413953306596:region=ap-northeast-1": [
+    "ap-northeast-1a",
+    "ap-northeast-1c",
+    "ap-northeast-1d"
+  ],
+  "ssm:account=413953306596:parameterName=/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2:region=ap-northeast-1": "ami-0f9ae750e8274075b"
+}
