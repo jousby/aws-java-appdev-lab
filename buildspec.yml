@@ -6,7 +6,7 @@ phases:
     commands:
       - echo "Build started on `date`"
       - echo "Running mvn install"
-      - bash -c "source /opt/sdkman/bin/sdkman-init.sh && mvn install"
+      - bash -c "source /opt/sdkman/bin/sdkman-init.sh && source /root/.nvm/nvm.sh && mvn install"
 
   post_build:
     commands:
