@@ -4,8 +4,8 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.mycompany.app</groupId>
-    <artifactId>app</artifactId>
+    <groupId>com.myorg</groupId>
+    <artifactId>aws-java-appdev-lab</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -14,4 +14,69 @@
         <module>infrastructure</module>
         <module>petclinic-app</module>
     </modules>
+
+    <properties>
+        <awscdk.version>0.24.1</awscdk.version>
+        <junit.version>4.12</junit.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- AWS Cloud Development Kit -->
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>cdk</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+
+            <!-- Respective AWS Construct Libraries -->
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>iam</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>s3</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>codebuild</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>codepipeline</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>secretsmanager</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>ec2</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>elasticloadbalancingv2</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>autoscaling</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
