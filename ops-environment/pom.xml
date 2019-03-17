@@ -1,13 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>com.myorg</groupId>
+<?xml version="1.0" encoding="UTF-8"?> <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> <modelVersion>4.0.0</modelVersion> <parent> <groupId>com.myorg</groupId>
         <artifactId>aws-java-appdev-lab</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>infrastructure</artifactId>
+    <artifactId>ops-environment</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,6 +44,14 @@
     <dependencies>
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
+            <artifactId>cdk-assets</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awscdk</groupId>
+            <artifactId>autoscaling</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awscdk</groupId>
             <artifactId>cdk</artifactId>
         </dependency>
         <dependency>
@@ -61,7 +64,7 @@
         </dependency>
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
-            <artifactId>autoscaling</artifactId>
+            <artifactId>iam</artifactId>
         </dependency>
 
         <dependency>

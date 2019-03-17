@@ -10,13 +10,13 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>pipeline</module>
-        <module>infrastructure</module>
+        <module>ops-pipeline</module>
+        <module>ops-environment</module>
         <module>petclinic-app</module>
     </modules>
 
     <properties>
-        <awscdk.version>0.24.1</awscdk.version>
+        <awscdk.version>0.25.3</awscdk.version>
         <junit.version>4.12</junit.version>
     </properties>
 
@@ -32,12 +32,12 @@
             <!-- Respective AWS Construct Libraries -->
             <dependency>
                 <groupId>software.amazon.awscdk</groupId>
-                <artifactId>iam</artifactId>
+                <artifactId>autoscaling</artifactId>
                 <version>${awscdk.version}</version>
             </dependency>
             <dependency>
                 <groupId>software.amazon.awscdk</groupId>
-                <artifactId>s3</artifactId>
+                <artifactId>cdk-assets</artifactId>
                 <version>${awscdk.version}</version>
             </dependency>
             <dependency>
@@ -52,11 +52,6 @@
             </dependency>
             <dependency>
                 <groupId>software.amazon.awscdk</groupId>
-                <artifactId>secretsmanager</artifactId>
-                <version>${awscdk.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>software.amazon.awscdk</groupId>
                 <artifactId>ec2</artifactId>
                 <version>${awscdk.version}</version>
             </dependency>
@@ -67,7 +62,17 @@
             </dependency>
             <dependency>
                 <groupId>software.amazon.awscdk</groupId>
-                <artifactId>autoscaling</artifactId>
+                <artifactId>iam</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>s3</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>secretsmanager</artifactId>
                 <version>${awscdk.version}</version>
             </dependency>
 
