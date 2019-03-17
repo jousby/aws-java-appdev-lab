@@ -6,7 +6,6 @@ import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.codebuild.*;
 import software.amazon.awscdk.services.codepipeline.*;
-import software.amazon.awscdk.services.codepipeline.api.Artifact;
 import software.amazon.awscdk.services.s3.Bucket;
 import software.amazon.awscdk.services.s3.BucketImportProps;
 import software.amazon.awscdk.services.s3.IBucket;
@@ -17,7 +16,7 @@ import java.util.Arrays;
 
 public class PipelineStack extends Stack {
 
-    private static final String REGIONAL_ARTIFACT_CACHE_BUCKET_NAME = "joappdevone-ap-southeast-2-codebuild-cache";
+    private static final String REGIONAL_ARTIFACT_CACHE_BUCKET_NAME = "joappdevone-us-east-1-codebuild-cache";
 
     public PipelineStack(final App parent, final String name) {
         this(parent, name, null);
@@ -32,7 +31,6 @@ public class PipelineStack extends Stack {
         Pipeline pipeline = new Pipeline(this, "PetClinicPipeline", PipelineProps.builder().build());
 
         // Source stage
-
         // Prerequisite: You need to grab your oauth token from github, log into the AWS Console and add it
         // as a secret key in SecretsManager
         SecretString secretString = new SecretString(this, "oauth", SecretStringProps.builder()

@@ -10,9 +10,9 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>petclinic-app</module>
         <module>ops-pipeline</module>
         <module>ops-environment</module>
-        <module>petclinic-app</module>
     </modules>
 
     <properties>
