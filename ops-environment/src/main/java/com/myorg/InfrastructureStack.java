@@ -8,6 +8,7 @@ import software.amazon.awscdk.assets.AssetPackaging;
 import software.amazon.awscdk.assets.GenericAssetProps;
 import software.amazon.awscdk.services.autoscaling.AutoScalingGroup;
 import software.amazon.awscdk.services.autoscaling.AutoScalingGroupProps;
+import software.amazon.awscdk.services.autoscaling.UpdateType;
 import software.amazon.awscdk.services.ec2.*;
 import software.amazon.awscdk.services.elasticloadbalancingv2.*;
 import software.amazon.awscdk.services.iam.PolicyPrincipal;
@@ -69,8 +70,7 @@ public class InfrastructureStack extends Stack {
                 .withMachineImage(new AmazonLinuxImage(AmazonLinuxImageProps.builder()
                     .withGeneration(AmazonLinuxGeneration.AmazonLinux2)
                     .build()))
-                .withAssociatePublicIpAddress(true)
-                .withKeyName("joappdevone-us-east-1")
+                .withUpdateType(UpdateType.RollingUpdate)
                 .build());
 
         // listener target
