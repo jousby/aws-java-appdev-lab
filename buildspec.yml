@@ -5,18 +5,15 @@ phases:
   build:
     commands:
       - echo "Build started on `date`"
-      - echo "Running mvn install"
-      - bash -c "source /opt/sdkman/bin/sdkman-init.sh && source /root/.nvm/nvm.sh && mvn install"
+      - echo "Running mvn package"
+      - bash -c "source /opt/sdkman/bin/sdkman-init.sh && source /root/.nvm/nvm.sh && mvn package"
+      - echo "Running cdk to build env and provision application"
+      - cd ops-environment
+      - bash -c "source /opt/sdkman/bin/sdkman-init.sh && source /root/.nvm/nvm.sh && cdk deploy"
 
   post_build:
     commands:
       - echo "Build completed on `date`"
-
-artifacts:
-  files:
-    - infrastructure/src/main/scripts/**/*
-    - infrastructure/src/main/templates/**/*
-    - pipeline/target/pipeline-0.1.jar
 
 cache:
   paths:

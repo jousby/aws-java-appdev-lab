@@ -13,6 +13,8 @@ import software.amazon.awscdk.services.s3.IBucket;
 import software.amazon.awscdk.services.secretsmanager.SecretString;
 import software.amazon.awscdk.services.secretsmanager.SecretStringProps;
 
+import java.util.Arrays;
+
 public class PipelineStack extends Stack {
 
     private static final String REGIONAL_ARTIFACT_CACHE_BUCKET_NAME = "joappdevone-ap-southeast-2-codebuild-cache";
@@ -29,72 +31,53 @@ public class PipelineStack extends Stack {
 
         Pipeline pipeline = new Pipeline(this, "PetClinicPipeline", PipelineProps.builder().build());
 
-        Artifact sourceArtifact = createSourceStage(pipeline);
-
-        Stage buildStage = createBuildStage(
-            pipeline,
-            "jousby/aws-buildbox:latest",
-            regionalArtifactCache,
-            sourceArtifact
-        );
-    }
-
-    private Artifact createSourceStage(Pipeline pipeline) {
         // Source stage
-        Stage sourceStage = new Stage(this, "SourceStage", StageProps.builder()
-            .withPipeline(pipeline)
-            .withPlacement(StagePlacement.builder().withAtIndex(0).build())
-            .build());
 
         // Prerequisite: You need to grab your oauth token from github, log into the AWS Console and add it
         // as a secret key in SecretsManager
         SecretString secretString = new SecretString(this, "oauth", SecretStringProps.builder()
             .withSecretId("jousby/github")
             .build());
+
         Secret githubToken = new Secret(secretString.jsonFieldValue("oauthToken"));
 
-        GitHubSourceAction sourceAction = new GitHubSourceAction(this, "githubRepo", GitHubSourceActionProps
-            .builder()
+        GitHubSourceAction sourceAction = new GitHubSourceAction(GitHubSourceActionProps.builder()
+            .withActionName("GithubSourceAction")
             .withOwner("jousby")
             .withRepo("aws-java-appdev-lab")
             .withOauthToken(githubToken)
             .withBranch("lab/1-aws-basics")
-            .withStage(sourceStage)
             .withOutputArtifactName("SourceArtifact")
             .build());
 
-        return sourceAction.getOutputArtifact();
-    }
-
-    private Stage createBuildStage(
-        Pipeline pipeline,
-        String dockerHubBuildImage,
-        IBucket artifactCacheBucket,
-        Artifact sourceArtifact
-    ) {
-        // Build stage
-        Stage buildStage = new Stage(this, "BuildStage", StageProps.builder()
-            .withPipeline(pipeline)
-            .withPlacement(StagePlacement.builder().withAtIndex(1).build())
+        pipeline.addStage(StageAddToPipelineProps.builder()
+            .withName("SourceStage")
+            .withPlacement(StagePlacement.builder().withAtIndex(0).build())
+            .withActions(Arrays.asList(sourceAction))
             .build());
 
+        // Build stage
         BuildEnvironment buildEnvironment = BuildEnvironment.builder()
-            .withBuildImage(LinuxBuildImage.fromDockerHub(dockerHubBuildImage))
+            .withBuildImage(LinuxBuildImage.fromDockerHub("jousby/aws-buildbox:latest"))
             .build();
 
         PipelineProject buildProject = new PipelineProject(this, "PipelineProject",
             PipelineProjectProps.builder()
                 .withEnvironment(buildEnvironment)
-                .withCacheBucket(artifactCacheBucket)
+                .withCacheBucket(regionalArtifactCache)
                 .build());
 
-        PipelineBuildAction buildAction = new PipelineBuildAction(this, "buildAction",
-            PipelineBuildActionProps.builder()
-                .withInputArtifact(sourceArtifact)
+        PipelineBuildAction buildAction = new PipelineBuildAction(PipelineBuildActionProps.builder()
+                .withActionName("PipelineBuildAction")
+                .withInputArtifact(sourceAction.getOutputArtifact())
                 .withProject(buildProject)
-                .withStage(buildStage)
                 .build());
 
-        return buildStage;
+        pipeline.addStage(StageAddToPipelineProps.builder()
+            .withName("BuildStage")
+            .withPlacement(StagePlacement.builder().withAtIndex(1).build())
+            .withActions(Arrays.asList(buildAction))
+            .build());
+
     }
 }
