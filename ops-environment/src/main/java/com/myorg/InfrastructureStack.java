@@ -11,10 +11,7 @@ import software.amazon.awscdk.services.autoscaling.AutoScalingGroupProps;
 import software.amazon.awscdk.services.autoscaling.UpdateType;
 import software.amazon.awscdk.services.ec2.*;
 import software.amazon.awscdk.services.elasticloadbalancingv2.*;
-import software.amazon.awscdk.services.iam.PolicyPrincipal;
-import software.amazon.awscdk.services.iam.Role;
-import software.amazon.awscdk.services.iam.RoleProps;
-import software.amazon.awscdk.services.iam.ServicePrincipal;
+import software.amazon.awscdk.services.iam.*;
 
 import java.util.Arrays;
 
@@ -92,3 +89,11 @@ public class InfrastructureStack extends Stack {
         );
     }
 }
+
+//    Policy policy = new Policy(this, "Ec2Policy", PolicyProps.builder()
+//        .withStatements(Arrays.asList(
+//            new PolicyStatement()
+//                .addServicePrincipal("ec2.amazonaws.com")
+//        )).build());
+//
+//        policy.attachToRole(ec2Role);

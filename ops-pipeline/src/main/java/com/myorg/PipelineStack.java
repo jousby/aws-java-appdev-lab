@@ -25,6 +25,9 @@ public class PipelineStack extends Stack {
     public PipelineStack(final App parent, final String name, final StackProps props) {
         super(parent, name, props);
 
+        // TODO extract config
+        // TODO config as parameters
+
         IBucket regionalArtifactCache = Bucket.import_(this, "artifactCache", BucketImportProps.builder()
             .withBucketName(REGIONAL_ARTIFACT_CACHE_BUCKET_NAME).build());
 
@@ -76,6 +79,5 @@ public class PipelineStack extends Stack {
             .withPlacement(StagePlacement.builder().withAtIndex(1).build())
             .withActions(Arrays.asList(buildAction))
             .build());
-
     }
 }
