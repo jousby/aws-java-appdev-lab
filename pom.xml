@@ -16,7 +16,7 @@
     </modules>
 
     <properties>
-        <awscdk.version>0.25.3</awscdk.version>
+        <awscdk.version>0.27.0</awscdk.version>
         <junit.version>4.12</junit.version>
     </properties>
 
