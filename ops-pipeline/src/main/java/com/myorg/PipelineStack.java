@@ -18,6 +18,15 @@ public class PipelineStack extends Stack {
 
     private static final String REGIONAL_ARTIFACT_CACHE_BUCKET_NAME = "joappdevone-us-east-1-codebuild-cache";
 
+    private static final String SECRET_ID = "jousby/github";
+    private static final String SECRET_ID_JSON_FIELD = "oauthToken";
+
+    private static final String DOCKER_BUILD_ENV_IMAGE = "jousby/aws-buildbox:1.2.0";
+
+    private static final String GITHUB_OWNER = "jousby";
+    private static final String GITHUB_REPO = "aws-java-appdev-lab";
+    private static final String GITHUB_BRANCH = "lab/1-aws-basics";
+
     public PipelineStack(final App parent, final String name) {
         this(parent, name, null);
     }
@@ -25,29 +34,24 @@ public class PipelineStack extends Stack {
     public PipelineStack(final App parent, final String name, final StackProps props) {
         super(parent, name, props);
 
-        // TODO extract config
-        // TODO config as parameters
-
         IBucket regionalArtifactCache = Bucket.import_(this, "artifactCache", BucketImportProps.builder()
             .withBucketName(REGIONAL_ARTIFACT_CACHE_BUCKET_NAME).build());
 
+        SecretString secretString = new SecretString(this, "oauth", SecretStringProps.builder()
+            .withSecretId(SECRET_ID)
+            .build());
+        Secret githubToken = new Secret(secretString.jsonFieldValue(SECRET_ID_JSON_FIELD));
+
+        // Create pipeline
         Pipeline pipeline = new Pipeline(this, "PetClinicPipeline", PipelineProps.builder().build());
 
-        // Source stage
-        // Prerequisite: You need to grab your oauth token from github, log into the AWS Console and add it
-        // as a secret key in SecretsManager
-        SecretString secretString = new SecretString(this, "oauth", SecretStringProps.builder()
-            .withSecretId("jousby/github")
-            .build());
-
-        Secret githubToken = new Secret(secretString.jsonFieldValue("oauthToken"));
-
+        // Add source stage
         GitHubSourceAction sourceAction = new GitHubSourceAction(GitHubSourceActionProps.builder()
             .withActionName("GithubSourceAction")
-            .withOwner("jousby")
-            .withRepo("aws-java-appdev-lab")
+            .withOwner(GITHUB_OWNER)
+            .withRepo(GITHUB_REPO)
             .withOauthToken(githubToken)
-            .withBranch("lab/1-aws-basics")
+            .withBranch(GITHUB_BRANCH)
             .withOutputArtifactName("SourceArtifact")
             .build());
 
@@ -57,9 +61,9 @@ public class PipelineStack extends Stack {
             .withActions(Arrays.asList(sourceAction))
             .build());
 
-        // Build stage
+        // Add build stage
         BuildEnvironment buildEnvironment = BuildEnvironment.builder()
-            .withBuildImage(LinuxBuildImage.fromDockerHub("jousby/aws-buildbox:latest"))
+            .withBuildImage(LinuxBuildImage.fromDockerHub(DOCKER_BUILD_ENV_IMAGE))
             .build();
 
         PipelineProject buildProject = new PipelineProject(this, "PipelineProject",
