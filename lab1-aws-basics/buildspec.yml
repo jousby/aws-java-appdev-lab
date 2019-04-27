@@ -6,9 +6,10 @@ phases:
     commands:
       - echo "Build started on `date`"
       - echo "Running mvn package"
+      - cd lab1-aws-basics
       - bash -c "source /opt/sdkman/bin/sdkman-init.sh && source /root/.nvm/nvm.sh && mvn package"
       - echo "Running cdk to build env and provision application"
-      - cd lab1-aws-basics/ops-environment
+      - cd ops-environment
       - bash -c "source /opt/sdkman/bin/sdkman-init.sh && source /root/.nvm/nvm.sh && cdk deploy"
 
   post_build:
