@@ -46,7 +46,7 @@ public class InfrastructureStack extends Stack {
         AutoScalingGroup asg = new AutoScalingGroup(this, "PetClinicAutoScale",
             AutoScalingGroupProps.builder()
                 .withVpc(vpc)
-                .withRole(ec2Role)
+//                .withRole(ec2Role)
                 .withInstanceType(new InstanceTypePair(InstanceClass.Burstable2, InstanceSize.Small))
                 .withMachineImage(new AmazonLinuxImage(AmazonLinuxImageProps.builder()
                     .withGeneration(AmazonLinuxGeneration.AmazonLinux2)
