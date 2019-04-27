@@ -20,5 +20,11 @@
     "us-east-2b",
     "us-east-2c"
   ],
-  "ssm:account=413953306596:parameterName=/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2:region=us-east-2": "ami-02bcbb802e03574ba"
+  "ssm:account=413953306596:parameterName=/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2:region=us-east-2": "ami-02bcbb802e03574ba",
+  "availability-zones:account=413953306596:region=ap-northeast-1": [
+    "ap-northeast-1a",
+    "ap-northeast-1c",
+    "ap-northeast-1d"
+  ],
+  "ssm:account=413953306596:parameterName=/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2:region=ap-northeast-1": "ami-0f9ae750e8274075b"
 }

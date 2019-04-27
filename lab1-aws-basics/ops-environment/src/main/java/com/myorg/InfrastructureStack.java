@@ -1,8 +1,6 @@
 package com.myorg;
 
-import software.amazon.awscdk.App;
-import software.amazon.awscdk.Stack;
-import software.amazon.awscdk.StackProps;
+import software.amazon.awscdk.*;
 import software.amazon.awscdk.assets.Asset;
 import software.amazon.awscdk.assets.AssetPackaging;
 import software.amazon.awscdk.assets.AssetProps;
@@ -27,17 +25,11 @@ public class InfrastructureStack extends Stack {
     public InfrastructureStack(final App parent, final String name, final StackProps props) {
         super(parent, name, props);
 
-        // ec2 role for copying assets from s3
-//        Role ec2Role = new Role(this, "Ec2Role", RoleProps.builder()
-//            .withAssumedBy(new ServicePrincipal("ec2.amazonaws.com"))
-//            .build());
-
         // pet clinic jar (the Asset construct takes the local file and stores it in S3)
-        Asset asset = new Asset(this, "PetClinicJar", AssetProps.builder()
+        Asset petClinicJar = new Asset(this, "PetClinicJar", AssetProps.builder()
             .withPath(PETCLINIC_JAR_PATH)
             .withPackaging(AssetPackaging.File)
             .build());
-//        asset.grantRead(ec2Role);
 
         // create a vpc (software defined network)
         VpcNetwork vpc = new VpcNetwork(this, "PetclinicVPC", VpcNetworkProps.builder().build());
@@ -46,7 +38,6 @@ public class InfrastructureStack extends Stack {
         AutoScalingGroup asg = new AutoScalingGroup(this, "PetClinicAutoScale",
             AutoScalingGroupProps.builder()
                 .withVpc(vpc)
-//                .withRole(ec2Role)
                 .withInstanceType(new InstanceTypePair(InstanceClass.Burstable2, InstanceSize.Small))
                 .withMachineImage(new AmazonLinuxImage(AmazonLinuxImageProps.builder()
                     .withGeneration(AmazonLinuxGeneration.AmazonLinux2)
@@ -54,7 +45,8 @@ public class InfrastructureStack extends Stack {
                 .withUpdateType(UpdateType.RollingUpdate)
                 .build());
 
-        asset.grantRead(asg.getRole());
+        // grant our ec2 instance roles the permission to read the petclinic jar from s3
+        petClinicJar.grantRead(asg.getRole());
 
         // install the petclinic application on the instances in our autoscaling group
         asg.addUserData(
@@ -64,7 +56,7 @@ public class InfrastructureStack extends Stack {
             "yum -y install java-1.8.0-amazon-corretto",
             "",
             "# Download and run the petclinic jar",
-            String.format("aws s3 cp s3://%s/%s /tmp/%s", asset.getS3BucketName(), asset.getS3ObjectKey(), PETCLINIC_JAR_NAME),
+            String.format("aws s3 cp s3://%s/%s /tmp/%s", petClinicJar.getS3BucketName(), petClinicJar.getS3ObjectKey(), PETCLINIC_JAR_NAME),
             String.format("java -jar /tmp/%s &>> /tmp/petclinic.log", PETCLINIC_JAR_NAME)
         );
 
@@ -87,13 +79,12 @@ public class InfrastructureStack extends Stack {
             .withTargets(Arrays.asList(asg))
             .withPort(8080)
             .build());
+
+        // output the load balancer url to make tracking down our applications new address easier
+        CfnOutput output = new CfnOutput(this, "AlbUrl", CfnOutputProps.builder()
+            .withValue(alb.getDnsName())
+            .withExport("Pet Clinic Loadbalancer Url")
+            .build());
     }
 }
 
-//    Policy policy = new Policy(this, "Ec2Policy", PolicyProps.builder()
-//        .withStatements(Arrays.asList(
-//            new PolicyStatement()
-//                .addServicePrincipal("ec2.amazonaws.com")
-//        )).build());
-//
-//        policy.attachToRole(ec2Role);
