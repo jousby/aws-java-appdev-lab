@@ -1,27 +1,38 @@
 package com.myorg;
 
-import software.amazon.awscdk.App;
-import software.amazon.awscdk.Secret;
-import software.amazon.awscdk.Stack;
-import software.amazon.awscdk.StackProps;
+import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.codebuild.*;
 import software.amazon.awscdk.services.codepipeline.*;
+import software.amazon.awscdk.services.codepipeline.actions.CodeBuildAction;
+import software.amazon.awscdk.services.codepipeline.actions.CodeBuildActionProps;
+import software.amazon.awscdk.services.codepipeline.actions.GitHubSourceAction;
+import software.amazon.awscdk.services.codepipeline.actions.GitHubSourceActionProps;
+import software.amazon.awscdk.services.iam.IRole;
 import software.amazon.awscdk.services.s3.Bucket;
 import software.amazon.awscdk.services.s3.BucketImportProps;
 import software.amazon.awscdk.services.s3.IBucket;
-import software.amazon.awscdk.services.secretsmanager.SecretString;
-import software.amazon.awscdk.services.secretsmanager.SecretStringProps;
 
 import java.util.Arrays;
 
+/**
+ *  Prerequisites:
+ *
+ *  1. Fork this project in github into your own account.
+ *  2. Create a personal github token that has permisssions to add webhooks to the project
+ *  3. Store your github token in Secrets Manager (in your target region). Make note of the
+ *     secret id and json field.
+ *  4. Create an s3 bucket for the code build cache (in your target region).
+ *  5. Run the cdk bootstrap process in your target region.
+ *  4. Update the variables below to reflect the github project you
+ */
 public class PipelineStack extends Stack {
 
-    private static final String REGIONAL_ARTIFACT_CACHE_BUCKET_NAME = "joappdevone-us-east-1-codebuild-cache";
+    private static final String REGIONAL_ARTIFACT_CACHE_BUCKET_NAME = "joappdevone-ap-northeast-1-codebuild-cache";
 
     private static final String SECRET_ID = "jousby/github";
     private static final String SECRET_ID_JSON_FIELD = "oauthToken";
 
-    private static final String DOCKER_BUILD_ENV_IMAGE = "jousby/aws-buildbox:1.2.0";
+    private static final String DOCKER_BUILD_ENV_IMAGE = "jousby/aws-buildbox:1.4.0";
 
     private static final String GITHUB_OWNER = "jousby";
     private static final String GITHUB_REPO = "aws-java-appdev-lab";
@@ -37,13 +48,14 @@ public class PipelineStack extends Stack {
         IBucket regionalArtifactCache = Bucket.import_(this, "artifactCache", BucketImportProps.builder()
             .withBucketName(REGIONAL_ARTIFACT_CACHE_BUCKET_NAME).build());
 
-        SecretString secretString = new SecretString(this, "oauth", SecretStringProps.builder()
-            .withSecretId(SECRET_ID)
+        SecretValue githubToken = SecretValue.secretsManager(SECRET_ID, SecretsManagerSecretOptions.builder()
+            .withJsonField(SECRET_ID_JSON_FIELD)
             .build());
-        Secret githubToken = new Secret(secretString.jsonFieldValue(SECRET_ID_JSON_FIELD));
 
         // Create pipeline
         Pipeline pipeline = new Pipeline(this, "PetClinicPipeline", PipelineProps.builder().build());
+
+        Artifact sourceArtifact = Artifact.artifact("SourceArtifact");
 
         // Add source stage
         GitHubSourceAction sourceAction = new GitHubSourceAction(GitHubSourceActionProps.builder()
@@ -52,7 +64,7 @@ public class PipelineStack extends Stack {
             .withRepo(GITHUB_REPO)
             .withOauthToken(githubToken)
             .withBranch(GITHUB_BRANCH)
-            .withOutputArtifactName("SourceArtifact")
+            .withOutput(sourceArtifact)
             .build());
 
         pipeline.addStage(StageAddToPipelineProps.builder()
@@ -72,11 +84,17 @@ public class PipelineStack extends Stack {
                 .withCacheBucket(regionalArtifactCache)
                 .build());
 
-        PipelineBuildAction buildAction = new PipelineBuildAction(PipelineBuildActionProps.builder()
+        buildProject.getRole()
+                    .attachManagedPolicy("arn:aws:iam::aws:policy/AdministratorAccess");
+
+        CodeBuildAction buildAction = new CodeBuildAction(CodeBuildActionProps.builder()
                 .withActionName("PipelineBuildAction")
-                .withInputArtifact(sourceAction.getOutputArtifact())
+                .withInput(sourceArtifact)
                 .withProject(buildProject)
                 .build());
+
+//        buildAction.getRole()
+//                   .attachManagedPolicy("arn:aws:iam::aws:policy/AdministratorAccess");
 
         pipeline.addStage(StageAddToPipelineProps.builder()
             .withName("BuildStage")

@@ -69,6 +69,10 @@
         </dependency>
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
+            <artifactId>codepipeline-actions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awscdk</groupId>
             <artifactId>secretsmanager</artifactId>
         </dependency>
 
