@@ -8,7 +8,7 @@ phases:
       - echo "Running mvn package"
       - bash -c "source /opt/sdkman/bin/sdkman-init.sh && source /root/.nvm/nvm.sh && mvn package"
       - echo "Running cdk to build env and provision application"
-      - cd ops-environment
+      - cd lab1-aws-basics/ops-environment
       - bash -c "source /opt/sdkman/bin/sdkman-init.sh && source /root/.nvm/nvm.sh && cdk deploy"
 
   post_build:

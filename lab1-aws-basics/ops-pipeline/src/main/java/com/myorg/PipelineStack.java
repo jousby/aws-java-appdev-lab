@@ -37,6 +37,7 @@ public class PipelineStack extends Stack {
     private static final String GITHUB_OWNER = "jousby";
     private static final String GITHUB_REPO = "aws-java-appdev-lab";
     private static final String GITHUB_BRANCH = "lab/1-aws-basics";
+    private static final String GITHUB_LAB1_PATH = "lab1-aws-basics";
 
     public PipelineStack(final App parent, final String name) {
         this(parent, name, null);
@@ -81,6 +82,7 @@ public class PipelineStack extends Stack {
         PipelineProject buildProject = new PipelineProject(this, "PipelineProject",
             PipelineProjectProps.builder()
                 .withEnvironment(buildEnvironment)
+                .withBuildSpec(GITHUB_LAB1_PATH + "/buildspec.yml")
                 .withCacheBucket(regionalArtifactCache)
                 .build());
 
