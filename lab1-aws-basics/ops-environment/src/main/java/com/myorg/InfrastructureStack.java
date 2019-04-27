@@ -81,9 +81,8 @@ public class InfrastructureStack extends Stack {
             .build());
 
         // output the load balancer url to make tracking down our applications new address easier
-        CfnOutput output = new CfnOutput(this, "AlbUrl", CfnOutputProps.builder()
+        CfnOutput output = new CfnOutput(this, "alburl", CfnOutputProps.builder()
             .withValue(alb.getDnsName())
-            .withExport("Pet Clinic Loadbalancer Url")
             .build());
     }
 }
