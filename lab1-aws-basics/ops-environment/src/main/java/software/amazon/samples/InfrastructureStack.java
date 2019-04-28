@@ -9,7 +9,6 @@ import software.amazon.awscdk.services.autoscaling.AutoScalingGroupProps;
 import software.amazon.awscdk.services.autoscaling.UpdateType;
 import software.amazon.awscdk.services.ec2.*;
 import software.amazon.awscdk.services.elasticloadbalancingv2.*;
-import software.amazon.awscdk.services.iam.*;
 
 import java.util.Arrays;
 

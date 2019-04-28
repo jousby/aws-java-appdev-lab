@@ -6,6 +6,7 @@ target/
 .attach_pid*
 .idea
 *.iml
+.mvn/
 /target
 .sts4-cache/
 .vscode/*
@@ -15,3 +16,4 @@ target/
 !.vscode/extensions.json
 _site/
 .cdk*/
+.classpath.txt
