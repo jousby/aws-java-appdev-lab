@@ -16,7 +16,7 @@ the labs.
 
 ## Instructions
 
-The first lab [0. Getting Started](lab0-getting-started) is mandatory in 
+The first lab [lab0-getting-started](lab0-getting-started) is mandatory in 
 order to ensure you have all the necessary prerequisites in place. Apart
 from this though there is no required progression in moving through the 
 labs. Each lab is self contained and can be completed in isolation and
@@ -31,12 +31,12 @@ your comfort zone as you work through the list.
 
 | Lab | Description |
 |-----|-------------|
-| [0. Getting Started](lab0-getting-started) | Install the necessary tools and bootstrap your AWS account to run these labs |
-| [1. AWS Basics](lab1-aws-basics) | Migrating a [Spring Boot](https://spring.io/guides/gs/spring-boot)  application to a cloud native variation of a classic web architecture (Load Balancer -> Virtual Machines) |
-| 2. Containers (ECS) | TODO - Migrate a dockerised Spring Boot application to run on Amazon Elastic Container Service (ECS) |
-| 3. Containers (EKS) | TODO - Migrate a dockerised Spring Boot application to run on Amazon Elastic Container Service for Kubernetes (EKS) |
-| 4. Serverless (Basic) | TODO - Migrate to Serverless based microservices with AWS Lambda and Amazon API Gateway |
-| 5. Serverless (Graphql) | TODO - Migrate to Serverless based microservices with AWS Appsync and AWS Amplify |
+| [lab0-getting-started](lab0-getting-started) | Install the necessary tools and bootstrap your AWS account to run these labs |
+| [lab1-aws-basics](lab1-aws-basics) | Migrating a [Spring Boot](https://spring.io/guides/gs/spring-boot)  application to a cloud native variation of a classic web architecture (Load Balancer -> Virtual Machines) |
+| lab2-containers-ecs | TODO - Migrate a dockerised Spring Boot application to run on Amazon Elastic Container Service (ECS) |
+| lab3-containers-eks | TODO - Migrate a dockerised Spring Boot application to run on Amazon Elastic Container Service for Kubernetes (EKS) |
+| lab4-serverless-basic | TODO - Migrate to Serverless based microservices with AWS Lambda and Amazon API Gateway |
+| lab5-serverless-graphql | TODO - Migrate to Serverless based microservices with AWS Appsync and AWS Amplify |
 
 
 ## Feedback Welcome
