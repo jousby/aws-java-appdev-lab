@@ -35,7 +35,7 @@ public class PipelineStack extends Stack {
 
     private static final String GITHUB_OWNER = "jousby";
     private static final String GITHUB_REPO = "aws-java-appdev-lab";
-    private static final String GITHUB_BRANCH = "master";
+    private static final String GITHUB_BRANCH = "demo";
     private static final String GITHUB_LAB1_PATH = "lab1-aws-basics";
 
     public PipelineStack(final App parent, final String name) {
