@@ -1,6 +1,6 @@
 package software.amazon.samples;
 
-import software.amazon.awscdk.App;
+import software.amazon.awscdk.core.App;
 
 public class PipelineApp {
     public static void main(final String argv[]) {
@@ -8,6 +8,6 @@ public class PipelineApp {
 
         new PipelineStack(app, "petclinic-pipeline");
 
-        app.run();
+        app.synth();
     }
 }

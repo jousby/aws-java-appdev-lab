@@ -1,6 +1,6 @@
 package software.amazon.samples;
 
-import software.amazon.awscdk.App;
+import software.amazon.awscdk.core.App;
 
 public class InfrastructureApp {
     public static void main(final String argv[]) {
@@ -8,6 +8,6 @@ public class InfrastructureApp {
 
         new InfrastructureStack(app, "petclinic-environment");
 
-        app.run();
+        app.synth();
     }
 }

@@ -1,14 +1,14 @@
 package software.amazon.samples;
 
-import software.amazon.awscdk.*;
+import software.amazon.awscdk.core.*;
 import software.amazon.awscdk.services.codebuild.*;
 import software.amazon.awscdk.services.codepipeline.*;
 import software.amazon.awscdk.services.codepipeline.actions.CodeBuildAction;
 import software.amazon.awscdk.services.codepipeline.actions.CodeBuildActionProps;
 import software.amazon.awscdk.services.codepipeline.actions.GitHubSourceAction;
 import software.amazon.awscdk.services.codepipeline.actions.GitHubSourceActionProps;
+import software.amazon.awscdk.services.iam.ManagedPolicy;
 import software.amazon.awscdk.services.s3.Bucket;
-import software.amazon.awscdk.services.s3.BucketImportProps;
 import software.amazon.awscdk.services.s3.IBucket;
 
 import java.util.Arrays;
@@ -26,7 +26,7 @@ import java.util.Arrays;
  */
 public class PipelineStack extends Stack {
 
-    private static final String REGIONAL_ARTIFACT_CACHE_BUCKET_NAME = "joappdevone-ap-northeast-1-codebuild-cache";
+    private static final String REGIONAL_ARTIFACT_CACHE_BUCKET_NAME = "joappdevone-ap-southeast-2-codebuild-cache";
 
     private static final String SECRET_ID = "jousby/github";
     private static final String SECRET_ID_JSON_FIELD = "oauthToken";
@@ -45,11 +45,10 @@ public class PipelineStack extends Stack {
     public PipelineStack(final App parent, final String name, final StackProps props) {
         super(parent, name, props);
 
-        IBucket regionalArtifactCache = Bucket.import_(this, "artifactCache", BucketImportProps.builder()
-            .withBucketName(REGIONAL_ARTIFACT_CACHE_BUCKET_NAME).build());
+        IBucket regionalArtifactCache = Bucket.fromBucketName(this, "artifactCache", REGIONAL_ARTIFACT_CACHE_BUCKET_NAME);
 
         SecretValue githubToken = SecretValue.secretsManager(SECRET_ID, SecretsManagerSecretOptions.builder()
-            .withJsonField(SECRET_ID_JSON_FIELD)
+            .jsonField(SECRET_ID_JSON_FIELD)
             .build());
 
         // Create a pipeline
@@ -59,18 +58,17 @@ public class PipelineStack extends Stack {
 
         // Add a source stage that retrieves our source from github on each commit to a specific branch
         GitHubSourceAction sourceAction = new GitHubSourceAction(GitHubSourceActionProps.builder()
-            .withActionName("GithubSourceAction")
-            .withOwner(GITHUB_OWNER)
-            .withRepo(GITHUB_REPO)
-            .withOauthToken(githubToken)
-            .withBranch(GITHUB_BRANCH)
-            .withOutput(sourceArtifact)
+            .actionName("GithubSourceAction")
+            .owner(GITHUB_OWNER)
+            .repo(GITHUB_REPO)
+            .oauthToken(githubToken)
+            .branch(GITHUB_BRANCH)
+            .output(sourceArtifact)
             .build());
 
-        pipeline.addStage(StageAddToPipelineProps.builder()
-            .withName("SourceStage")
-            .withPlacement(StagePlacement.builder().withAtIndex(0).build())
-            .withActions(Arrays.asList(sourceAction))
+        pipeline.addStage(StageOptions.builder()
+            .stageName("SourceStage")
+            .actions(Arrays.asList(sourceAction))
             .build());
 
         // Add a build stage that takes the source from the previous stage and runs the build commands in our
@@ -78,32 +76,31 @@ public class PipelineStack extends Stack {
 
         // Leverage a custom docker image that has a specific build toolchain
         BuildEnvironment buildEnvironment = BuildEnvironment.builder()
-            .withBuildImage(LinuxBuildImage.fromDockerHub(DOCKER_BUILD_ENV_IMAGE))
+            .buildImage(LinuxBuildImage.fromDockerRegistry(DOCKER_BUILD_ENV_IMAGE))
             .build();
 
         PipelineProject buildProject = new PipelineProject(this, "PipelineProject",
             PipelineProjectProps.builder()
-                .withEnvironment(buildEnvironment)
-                .withBuildSpec(GITHUB_LAB1_PATH + "/buildspec.yml")
-                .withCacheBucket(regionalArtifactCache)
+                .environment(buildEnvironment)
+                .buildSpec(BuildSpec.fromSourceFilename(GITHUB_LAB1_PATH + "/buildspec.yml"))
+                .cache(Cache.bucket(regionalArtifactCache))
                 .build());
 
         // Adding AdministratorAccess allows the build agent to provision any type of resources but if looking to use
         // in a production context you would want to tighten this up with a custom policy that only allows the build
         // agent to provision those resources that you use in your environment stack.
         buildProject.getRole()
-                    .attachManagedPolicy("arn:aws:iam::aws:policy/AdministratorAccess");
+                .addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess"));
 
         CodeBuildAction buildAction = new CodeBuildAction(CodeBuildActionProps.builder()
-                .withActionName("PipelineBuildAction")
-                .withInput(sourceArtifact)
-                .withProject(buildProject)
+                .actionName("PipelineBuildAction")
+                .input(sourceArtifact)
+                .project(buildProject)
                 .build());
 
-        pipeline.addStage(StageAddToPipelineProps.builder()
-            .withName("BuildStage")
-            .withPlacement(StagePlacement.builder().withAtIndex(1).build())
-            .withActions(Arrays.asList(buildAction))
+        pipeline.addStage(StageOptions.builder()
+            .stageName("BuildStage")
+            .actions(Arrays.asList(buildAction))
             .build());
     }
 }

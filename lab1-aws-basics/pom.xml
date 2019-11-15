@@ -16,18 +16,13 @@
     </modules>
 
     <properties>
-        <awscdk.version>0.29.0</awscdk.version>
+        <awscdk.version>1.15.0.DEVPREVIEW</awscdk.version>
         <junit.version>4.12</junit.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <!-- AWS Cloud Development Kit -->
-            <dependency>
-                <groupId>software.amazon.awscdk</groupId>
-                <artifactId>cdk</artifactId>
-                <version>${awscdk.version}</version>
-            </dependency>
 
             <!-- Respective AWS Construct Libraries -->
             <dependency>
@@ -73,6 +68,11 @@
             <dependency>
                 <groupId>software.amazon.awscdk</groupId>
                 <artifactId>s3</artifactId>
+                <version>${awscdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>s3-assets</artifactId>
                 <version>${awscdk.version}</version>
             </dependency>
             <dependency>
