@@ -16,4 +16,5 @@ target/
 !.vscode/extensions.json
 _site/
 .cdk*/
+cdk.out/
 .classpath.txt

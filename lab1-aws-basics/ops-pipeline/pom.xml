@@ -49,10 +49,6 @@
     <dependencies>
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
-            <artifactId>cdk</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>software.amazon.awscdk</groupId>
             <artifactId>iam</artifactId>
         </dependency>
         <dependency>

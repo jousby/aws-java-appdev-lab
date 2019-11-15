@@ -1,14 +1,13 @@
 package software.amazon.samples;
 
-import software.amazon.awscdk.*;
-import software.amazon.awscdk.assets.Asset;
-import software.amazon.awscdk.assets.AssetPackaging;
-import software.amazon.awscdk.assets.AssetProps;
+import software.amazon.awscdk.core.*;
 import software.amazon.awscdk.services.autoscaling.AutoScalingGroup;
 import software.amazon.awscdk.services.autoscaling.AutoScalingGroupProps;
 import software.amazon.awscdk.services.autoscaling.UpdateType;
 import software.amazon.awscdk.services.ec2.*;
 import software.amazon.awscdk.services.elasticloadbalancingv2.*;
+import software.amazon.awscdk.services.s3.assets.Asset;
+import software.amazon.awscdk.services.s3.assets.AssetProps;
 
 import java.util.Arrays;
 
@@ -26,22 +25,22 @@ public class InfrastructureStack extends Stack {
 
         // pet clinic jar (the Asset construct takes the local file and stores it in S3)
         Asset petClinicJar = new Asset(this, "PetClinicJar", AssetProps.builder()
-            .withPath(PETCLINIC_JAR_PATH)
-            .withPackaging(AssetPackaging.File)
+            .path(PETCLINIC_JAR_PATH)
             .build());
 
         // create a vpc (software defined network)
-        VpcNetwork vpc = new VpcNetwork(this, "PetclinicVPC", VpcNetworkProps.builder().build());
+        Vpc vpc = new Vpc(this, "PetclinicVPC", VpcProps.builder().build());
 
         // create an autoscaling group and place it within the vpc
         AutoScalingGroup asg = new AutoScalingGroup(this, "PetClinicAutoScale",
             AutoScalingGroupProps.builder()
-                .withVpc(vpc)
-                .withInstanceType(new InstanceTypePair(InstanceClass.Burstable2, InstanceSize.Small))
-                .withMachineImage(new AmazonLinuxImage(AmazonLinuxImageProps.builder()
-                    .withGeneration(AmazonLinuxGeneration.AmazonLinux2)
+                .vpc(vpc)
+                .instanceType(InstanceType.of(InstanceClass.BURSTABLE2, InstanceSize.SMALL))
+                .machineImage(new AmazonLinuxImage(AmazonLinuxImageProps.builder()
+                    .generation(AmazonLinuxGeneration.AMAZON_LINUX_2)
                     .build()))
-                .withUpdateType(UpdateType.RollingUpdate)
+                .updateType(UpdateType.ROLLING_UPDATE)
+                .allowAllOutbound(false)
                 .build());
 
         // grant our ec2 instance roles the permission to read the petclinic jar from s3
@@ -62,26 +61,26 @@ public class InfrastructureStack extends Stack {
         // create an internet facing load balancer and place it within the the vpc
         ApplicationLoadBalancer alb = new ApplicationLoadBalancer(this, "PetClinicLB",
             ApplicationLoadBalancerProps.builder()
-                .withVpc(vpc)
-                .withInternetFacing(true)
+                .vpc(vpc)
+                .internetFacing(true)
                 .build());
 
         ApplicationListener listener = new ApplicationListener(this, "PetClinicListener",
             ApplicationListenerProps.builder()
-                .withPort(80)
-                .withOpen(true)
-                .withLoadBalancer(alb)
+                .port(80)
+                .open(true)
+                .loadBalancer(alb)
                 .build());
 
         // connect the autoscaling group running petclinic with the load balancer
         listener.addTargets("PetClinicFleet", AddApplicationTargetsProps.builder()
-            .withTargets(Arrays.asList(asg))
-            .withPort(8080)
+            .targets(Arrays.asList(asg))
+            .port(8080)
             .build());
 
         // output the load balancer url to make tracking down our applications new address easier
         CfnOutput output = new CfnOutput(this, "petclinicUrl", CfnOutputProps.builder()
-            .withValue(alb.getDnsName())
+            .value(alb.getLoadBalancerDnsName())
             .build());
     }
 }
