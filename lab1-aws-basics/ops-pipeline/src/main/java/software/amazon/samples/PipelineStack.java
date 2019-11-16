@@ -54,6 +54,9 @@ public class PipelineStack extends Stack {
         // Create a pipeline
         Pipeline pipeline = new Pipeline(this, "PetClinicPipeline", PipelineProps.builder().build());
 
+        pipeline.getRole()
+            .addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess"));
+
         Artifact sourceArtifact = Artifact.artifact("SourceArtifact");
 
         // Add a source stage that retrieves our source from github on each commit to a specific branch
