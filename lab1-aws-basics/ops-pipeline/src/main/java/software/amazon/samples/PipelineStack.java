@@ -31,7 +31,7 @@ public class PipelineStack extends Stack {
     private static final String SECRET_ID = "jousby/github";
     private static final String SECRET_ID_JSON_FIELD = "oauthToken";
 
-    private static final String DOCKER_BUILD_ENV_IMAGE = "jousby/aws-buildbox:1.4.0";
+    private static final String DOCKER_BUILD_ENV_IMAGE = "jousby/aws-buildbox:1.5.0";
 
     private static final String GITHUB_OWNER = "jousby";
     private static final String GITHUB_REPO = "aws-java-appdev-lab";
