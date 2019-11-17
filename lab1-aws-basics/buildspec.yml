@@ -10,6 +10,7 @@ phases:
       - bash -c "source /opt/sdkman/bin/sdkman-init.sh && source /root/.nvm/nvm.sh && mvn package"
       - echo "Running cdk to build env and provision application"
       - cd ops-environment
+      - bash -c "source /opt/sdkman/bin/sdkman-init.sh && source /root/.nvm/nvm.sh && cdk --version"
       - bash -c "source /opt/sdkman/bin/sdkman-init.sh && source /root/.nvm/nvm.sh && cdk deploy"
 
   post_build:
