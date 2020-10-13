@@ -17,7 +17,7 @@
 
     <properties>
         <awscdk.version>1.15.0.DEVPREVIEW</awscdk.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
     </properties>
 
     <dependencyManagement>
